@@ -54,7 +54,7 @@ public class SubastaController {
     @PostMapping("crear")
     @PreAuthorize("hasAnyRole('ADMIN','CLIENTE')")
     public ResponseEntity<?> crear(@Valid @RequestParam("subasta") String subasta, @RequestParam("fichero") MultipartFile multipartFile) {
-        System.out.println("");
+        System.out.println("SUBASTA "+subasta);
 //        if (result.hasErrors()) {
 //            return validar(result);
 //        }
