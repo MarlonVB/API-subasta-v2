@@ -33,6 +33,11 @@ public class SubastaServiceImp implements SubastaService {
     }
 
     @Override
+    public List<Subasta> findBySubastaNoPujada(String filtro) {
+        return repository.findBySubastaNoPujada(filtro);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<Subasta> findById(Long id) {
         return repository.findById(id);

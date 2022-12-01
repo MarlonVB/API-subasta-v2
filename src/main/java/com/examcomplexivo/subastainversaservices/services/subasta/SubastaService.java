@@ -14,6 +14,8 @@ public interface SubastaService {
 
     List<Subasta> findByFiltro(String filtro);
 
+    List<Subasta> findBySubastaNoPujada(String filtro);
+
     Optional<Subasta> findById(Long id);
     Subasta guardar(Subasta subasta);
 

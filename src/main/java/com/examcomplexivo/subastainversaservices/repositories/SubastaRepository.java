@@ -28,4 +28,10 @@ public interface SubastaRepository extends CrudRepository<Subasta, Long> {
             "OR su.hora_cierre_subasta LIKE %:filtro%",
             nativeQuery = true)
     List<Subasta> findByFiltro(String filtro);
+
+    @Query(value = "SELECT * " +
+            "FROM db_subasta.oferta AS ofe JOIN db_subasta.subasta AS su ON su.id_subasta = ofe.subasta_id_subasta " +
+            "WHERE ofe.proveedor_id_proveedor = :filtro && su.estado_subasta = 'Abierta'",
+            nativeQuery = true)
+    List<Subasta> findBySubastaNoPujada(String filtro);
 }

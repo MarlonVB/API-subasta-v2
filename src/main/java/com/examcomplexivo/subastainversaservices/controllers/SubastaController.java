@@ -40,6 +40,12 @@ public class SubastaController {
         return subastaService.listar();
     }
 
+    @GetMapping("listar/NoPuja/{idProveedor}")
+    public List<Subasta> listarNoPuja(@PathVariable String idProveedor) {
+        System.out.println("ID "+idProveedor);
+        return subastaService.findBySubastaNoPujada(idProveedor);
+    }
+
     @GetMapping("listar/{fechaInicio}/{fechaFin}")
     public List<Subasta> listarByFechas(@PathVariable(name = "fechaInicio", required = true) java.sql.Date fechaInicio,
                                 @PathVariable(name = "fechaFin", required = true) java.sql.Date fechaFin) {
@@ -53,25 +59,20 @@ public class SubastaController {
 
     @PostMapping("crear")
     @PreAuthorize("hasAnyRole('ADMIN','CLIENTE')")
-    public ResponseEntity<?> crear(@Valid @RequestParam("subasta") String subasta, @RequestParam("fichero") MultipartFile multipartFile) {
-        System.out.println("SUBASTA "+subasta);
-//        if (result.hasErrors()) {
-//            return validar(result);
-//        }
-        //Obtenemos el nombre del fichero
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        //Establecemos el directorio donde se subiran nuestros ficheros
-        String uploadDir = "photos";
+    public ResponseEntity<?> crear(@Valid @RequestParam("subasta") String subasta, @RequestParam(value = "fichero" , required = false) MultipartFile multipartFile) {
 
         Gson gson = new Gson();
         Subasta nuevaSubasta = gson.fromJson(subasta, Subasta.class);
 
-        nuevaSubasta.setImgSubasta(fileName);
-        System.out.println(nuevaSubasta.getImgSubasta());
-
         //Guardamos la imagen
         try {
-            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            if (multipartFile != null){
+                String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                //Establecemos el directorio donde se subiran nuestros ficheros
+                String uploadDir = "photos";
+                nuevaSubasta.setImgSubasta(fileName);
+                FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            }
         } catch (IOException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("mensaje", "ERROR IMG" + e.getMessage()));
         }
