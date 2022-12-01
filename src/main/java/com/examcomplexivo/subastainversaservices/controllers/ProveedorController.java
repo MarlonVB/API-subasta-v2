@@ -100,7 +100,30 @@ public class ProveedorController {
         }
 
         Optional<Proveedor> optionalProveedor = proveedorService.findById(idProveedor);
+        Optional<Proveedor> existClienteEmail = proveedorService.findByEmail(proveedor.getEmail());
+        Optional<Proveedor> existClienteTelefono = proveedorService.findByTelefono(proveedor.getTelefono());
         if(optionalProveedor.isPresent()){
+
+            /**
+             * Validacion para que no se repitan email de otro user al editar
+             * **/
+            if (!existClienteEmail.get().equals(optionalProveedor.get())
+                    && existClienteEmail.get().getEmail().equalsIgnoreCase(proveedor.getEmail())) {
+                return ResponseEntity.badRequest().body(
+                        Collections.singletonMap("mensaje", "Este email ya esta en uso.")
+                );
+            }
+
+            /**
+             * Validacion para que no se repitan telefono de otro user al editar
+             * **/
+            if (!existClienteTelefono.get().equals(optionalProveedor.get())
+                    && existClienteTelefono.get().getTelefono().equalsIgnoreCase(proveedor.getTelefono())) {
+                return ResponseEntity.badRequest().body(
+                        Collections.singletonMap("mensaje", "Este telefono ya esta en uso.")
+                );
+            }
+
 
             optionalProveedor.get().setNombre(proveedor.getNombre());
             optionalProveedor.get().setApellido(proveedor.getApellido());
